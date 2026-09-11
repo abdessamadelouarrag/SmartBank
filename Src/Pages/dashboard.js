@@ -80,6 +80,40 @@ export function initDashboard() {
 
                 </div>
             </section>
+
+            <section class="quick-actions" aria-labelledby="quick-actions-title">
+                <h2 id="quick-actions-title">Actions rapides</h2>
+
+                <div class="quick-actions-list">
+                    <a href="#/offers" class="quick-action">
+                        <span class="quick-action-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M5 5.5h14v13H5z"></path>
+                                <path d="M8 9h8M8 13h5"></path>
+                            </svg>
+                        </span>
+                        <span>
+                            <strong>Voir les offres</strong>
+                            <small>Découvrir les offres disponibles</small>
+                        </span>
+                        <span class="quick-action-arrow" aria-hidden="true">→</span>
+                    </a>
+
+                    <a href="#/credit" class="quick-action">
+                        <span class="quick-action-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4.5 7.5h15v10h-15z"></path>
+                                <path d="M7.5 5v2.5M16.5 5v2.5M8 12h3M8 15h6"></path>
+                            </svg>
+                        </span>
+                        <span>
+                            <strong>Simuler un crédit</strong>
+                            <small>Calculer votre mensualité</small>
+                        </span>
+                        <span class="quick-action-arrow" aria-hidden="true">→</span>
+                    </a>
+                </div>
+            </section>
         </main>
     `;
 }

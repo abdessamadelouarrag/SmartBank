@@ -2,6 +2,7 @@ import { renderLogin, initLoginEvents } from "../Pages/login.js";
 import { renderRegister, initRegisterEvents } from "../Pages/register.js";
 import { initDashboard, initDashboardEvents } from "../Pages/dashboard.js";
 import { initOffers, initOffersEvents} from "../Pages/offers.js";
+import { initCredit, initCreditEvents} from "../Pages/credit.js";
 const routes = {
     "/login": { 
         render: renderLogin,
@@ -18,7 +19,11 @@ const routes = {
     "/offers": {
         render: initOffers,
         initEvents: initOffersEvents
-    }
+    },
+    "/credit": {
+        render: initCredit,
+        initEvents: initCreditEvents
+}
 };
 
 let cleanupCurrentPage = null;
@@ -39,7 +44,7 @@ function renderRoute() {
                 <section class="auth-card auth-card--not-found">
                     <h1>404</h1>
                     <p>Page introuvable</p>
-                    <a href="#/login">Retour à la connexion</a>
+                    <a href="#/dashboard">Retour a la page de Dashboard</a>
                 </section>
             </main>`;
         cleanupCurrentPage = null;
