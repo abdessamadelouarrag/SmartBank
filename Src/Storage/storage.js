@@ -149,5 +149,101 @@ export function addSimulation(simulation) {
 
     data.simulations.push(simulation);
 
+    data.activities.push({
+        id: crypto.randomUUID(),
+        userId: simulation.userId,
+        type: "simulation",
+        title: "Simulation de crédit",
+        description:
+            `${simulation.creditType} - ${simulation.amount} DH`,
+        createdAt: simulation.createdAt
+    });
+
     saveData(data);
 }
+
+export function saveReward(reward) {
+    const data = getData();
+
+    const user = data.users.find(
+        user => user.id === reward.userId
+    );
+
+    if (!user) {
+        return false;
+    }
+
+    user.rewardPoints =
+        (user.rewardPoints || 0) + reward.points;
+
+    user.lastSpinDate = reward.date;
+
+    data.rewards.push(reward);
+
+    data.activities.push({
+        id: crypto.randomUUID(),
+        userId: reward.userId,
+        type: "reward",
+        title: "Récompense",
+        description:
+            reward.points > 0
+                ? `${reward.points} points gagnés`
+                : "Aucun point gagné",
+        createdAt: reward.createdAt
+    });
+
+    saveData(data);
+
+    return true;
+}
+
+//part of flash offers
+
+const defaultFlashOffers = [
+    {
+        idFlash: 1,
+        offerName: "Crédit Express",
+        description: "Profitez d’un taux réduit sur votre crédit personnel.",
+        dateEnd: "2026-09-20"
+    },
+    {
+        idFlash: 2,
+        offerName: "Compte Premium",
+        description: "Frais de gestion offerts pendant les six premiers mois.",
+        dateEnd: "2026-09-25"
+    },
+    {
+        idFlash: 3,
+        offerName: "Bonus Épargne",
+        description: "Recevez 200 points en ouvrant un compte épargne.",
+        dateEnd: "2026-10-01"
+    },
+    {
+        idFlash: 4,
+        offerName: "Carte Gold",
+        description: "Bénéficiez de 50 % de réduction sur les frais annuels.",
+        dateEnd: "2026-10-10"
+    },
+    {
+        idFlash: 5,
+        offerName: "Offre Cashback",
+        description: "Recevez 10 % de cashback sur vos achats en ligne.",
+        dateEnd: "2026-10-15"
+    },
+    {
+        idFlash: 6,
+        offerName: "Parrainage SmartBank",
+        description: "Gagnez 500 points pour chaque ami inscrit.",
+        dateEnd: "2026-10-30"
+    }
+];
+
+export function seedFlashOffers(){
+    const data = getData();
+
+    if(data.flashOffers.length == 0){
+        data.flashOffers = defaultFlashOffers;
+
+        saveData(data);
+    }
+}    

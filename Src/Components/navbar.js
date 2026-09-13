@@ -43,6 +43,13 @@ export function initNavbar() {
                         </a>
 
                         <a
+                            href="#/flashoffers"
+                            data-page="/flashoffers"
+                        >
+                            Flash Offers
+                        </a>
+
+                        <a
                             href="#/historique"
                             data-page="/historique"
                         >

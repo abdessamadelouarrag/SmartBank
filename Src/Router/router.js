@@ -3,6 +3,9 @@ import { renderRegister, initRegisterEvents } from "../Pages/register.js";
 import { initDashboard, initDashboardEvents } from "../Pages/dashboard.js";
 import { initOffers, initOffersEvents} from "../Pages/offers.js";
 import { initCredit, initCreditEvents} from "../Pages/credit.js";
+import { initHistorique, initHistoriqueEvents} from "../Pages/historique.js";
+import { initRecompenses,initRecompensesEvents} from "../Pages/recompenses.js";
+import { initFlashOffers } from "../Pages/flashOffers.js";
 const routes = {
     "/login": { 
         render: renderLogin,
@@ -23,7 +26,18 @@ const routes = {
     "/credit": {
         render: initCredit,
         initEvents: initCreditEvents
-}
+    },
+    "/historique": {
+        render: initHistorique,
+        initEvents: initHistoriqueEvents
+    },
+    "/recompenses": {
+        render: initRecompenses,
+        initEvents: initRecompensesEvents
+    },
+    "/flashoffers" : {
+        render : initFlashOffers,
+    }
 };
 
 let cleanupCurrentPage = null;
