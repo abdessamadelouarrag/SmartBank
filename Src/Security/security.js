@@ -26,6 +26,7 @@ function isStrongPassword(password){
     return hasMinlength;
 }
 
+
 export async function registerUser(formData) {
     const name = formData.name.trim();
     const email = formData.email.trim().toLowerCase();
