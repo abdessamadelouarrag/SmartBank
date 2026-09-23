@@ -38,7 +38,7 @@ export function initDashboard() {
             <section class="main-section">
                 <div class="banner">
                     <h1 class="text-bg">
-                        Bonjour, ${user.name} 👋
+                        Bonjour, ${user.name} 
                     </h1>
 
                     <h2>

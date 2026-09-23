@@ -46,6 +46,13 @@ function getCurrentPath() {
     return window.location.hash.replace("#", "") || "/login";
 }
 
+export function replaceIndexFile(){
+    if(window.location.pathname.endsWith("/index.html")){
+        const replacePath = window.location.pathname.replace("index.html", "");
+        window.history.replaceState(null, "", replacePath + window.location.search + window.location.hash)
+    }
+}
+
 function renderRoute() {
     const root = document.querySelector("#root");
     const route = routes[getCurrentPath()];

@@ -1,12 +1,6 @@
-import {
-    getCurrentUser,
-    saveReward
-} from "../Storage/storage.js";
+import {getCurrentUser,saveReward} from "../Storage/storage.js";
 
-import {
-    initNavbar,
-    initNavbarEvents
-} from "../Components/navbar.js";
+import {initNavbar,initNavbarEvents} from "../Components/navbar.js";
 
 
 const possibleRewards = [
@@ -18,37 +12,26 @@ const possibleRewards = [
 
 
 function getToday() {
-    const date = new Date();
-
-    const year = date.getFullYear();
-
-    const month = String(
-        date.getMonth() + 1
-    ).padStart(2, "0");
-
-    const day = String(
-        date.getDate()
-    ).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
+    return new Date().toISOString().slice(0, 10);
 }
 
 
 export function initRecompenses() {
     const user = getCurrentUser();
 
-    const alreadyPlayed =
-        user.lastSpinDate === getToday();
+    const alreadyPlayed = user.lastSpinDate === getToday();
 
     return `
         ${initNavbar()}
 
         <main class="rewards-page">
+
             <section class="rewards-header">
                 <h1>Récompenses</h1>
 
                 <p>
-                    Tournez la roue et gagnez des points.
+                    Cliquez sur le bouton pour gagner
+                    des points aléatoires.
                 </p>
 
                 <h2>
@@ -59,25 +42,19 @@ export function initRecompenses() {
                 </h2>
             </section>
 
-            <section class="spinner-container">
-                <div class="spinner-pointer">▼</div>
+            <section class="reward-container">
 
-                <div id="spinner-wheel" class="spinner-wheel">
-                    <span>10</span>
-                    <span>20</span>
-                    <span>50</span>
-                    <span>0</span>
-                </div>
+                <div class="reward-icon"></div>
 
                 <button
-                    id="spin-button"
+                    id="reward-button"
                     type="button"
                     ${alreadyPlayed ? "disabled" : ""}
                 >
                     ${
                         alreadyPlayed
                             ? "Tentative utilisée"
-                            : "Tourner la roue"
+                            : "Tenter ma chance"
                     }
                 </button>
 
@@ -88,99 +65,86 @@ export function initRecompenses() {
                             : ""
                     }
                 </p>
+
             </section>
+
         </main>
     `;
 }
 
+
 export function initRecompensesEvents() {
-    const spinButton =
-        document.querySelector("#spin-button");
+    const rewardButton = document.querySelector("#reward-button");
 
-    const wheel =
-        document.querySelector("#spinner-wheel");
+    const rewardMessage = document.querySelector("#reward-message");
 
-    const message =
-        document.querySelector("#reward-message");
-
-    const pointsElement =
-        document.querySelector("#points-value");
+    const pointsElement = document.querySelector("#points-value");
 
     const cleanupNavbar = initNavbarEvents();
 
-    let spinTimer = null;
 
-
-    function handleSpin() {
+    function handleReward() {
         const user = getCurrentUser();
         const today = getToday();
 
+        // verifier si l'utilisateur a deja jou
         if (user.lastSpinDate === today) {
-            message.textContent =
+            rewardMessage.textContent =
                 "Vous avez déjà utilisé votre tentative.";
 
-            spinButton.disabled = true;
+            rewardButton.disabled = true;
             return;
         }
 
-        spinButton.disabled = true;
-        spinButton.textContent = "La roue tourne...";
-
+        // Choisir une recompense aleatoire
         const randomIndex = Math.floor(
             Math.random() * possibleRewards.length
         );
 
-        const selectedReward =
-            possibleRewards[randomIndex];
+        const selectedReward = possibleRewards[randomIndex];
 
-        const rotation =
-            1440 + Math.floor(Math.random() * 360);
+        const reward = {
+            id: crypto.randomUUID(),
+            userId: user.id,
+            label: selectedReward.label,
+            points: selectedReward.points,
+            date: today,
+            createdAt: new Date().toISOString()
+        };
 
-        wheel.style.transform =
-            `rotate(${rotation}deg)`;
+        // Enregistrer dans LocalStorage
+        saveReward(reward);
 
-        spinTimer = setTimeout(() => {
-            const reward = {
-                id: crypto.randomUUID(),
-                userId: user.id,
-                label: selectedReward.label,
-                points: selectedReward.points,
-                date: today,
-                createdAt: new Date().toISOString()
-            };
+        // Récupérer les informations actualisées
+        const updatedUser = getCurrentUser();
 
-            saveReward(reward);
+        pointsElement.textContent =
+            updatedUser.rewardPoints || 0;
 
-            pointsElement.textContent =
-                (user.rewardPoints || 0) +
-                selectedReward.points;
+        if (selectedReward.points > 0) {
+            rewardMessage.textContent =
+                `Félicitations ! Vous avez gagné ${selectedReward.points} points 🎉`;
+        } else {
+            rewardMessage.textContent =
+                "Aucun gain cette fois. Revenez demain.";
+        }
 
-            if (selectedReward.points > 0) {
-                message.textContent =
-                    `Félicitations ! Vous avez gagné ${selectedReward.points} points.`;
-            } else {
-                message.textContent =
-                    "Aucun gain cette fois. Revenez demain.";
-            }
-
-            spinButton.textContent =
-                "Tentative utilisée";
-        }, 2000);
+        rewardButton.disabled = true;
+        rewardButton.textContent = "Tentative utilisée";
     }
 
 
-    spinButton.addEventListener("click", handleSpin);
+    rewardButton?.addEventListener(
+        "click",
+        handleReward
+    );
 
 
     return function cleanupRecompenses() {
-        spinButton.removeEventListener(
+        rewardButton?.removeEventListener(
             "click",
-            handleSpin
+            handleReward
         );
-
-        if (spinTimer) {
-            clearTimeout(spinTimer);
-        }
 
         cleanupNavbar();
     };
